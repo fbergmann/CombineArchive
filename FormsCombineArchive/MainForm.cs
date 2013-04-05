@@ -212,6 +212,23 @@ namespace FormsCombineArchive
             ((Entry)(item.Tag)).OpenLocation();
         }
 
+        private void ShowImage(string filename)
+        {
+            previewHandlerHost1.Visible = false;
+            webBrowser1.Visible = false;
+            pictureBox1.Visible = true;
+            textPanel.Visible = false;
+            pictureBox1.ImageLocation = filename;
+        }
+        private void DisplayUrl(string location)
+        {
+            previewHandlerHost1.Visible = false;
+            textPanel.Visible = false;
+            pictureBox1.Visible = false;
+            webBrowser1.Visible = true;
+
+            webBrowser1.Navigate(location);
+        }
         private void OnSelectionChanged(object sender, EventArgs e)
         {
             if (lstEntries.SelectedItems == null || lstEntries.SelectedItems.Count < 1)
@@ -238,14 +255,10 @@ namespace FormsCombineArchive
 
             string filename = entry.GetLocalFileName();
 
-            if (entry.Location.Contains("http://"))
+            string location = entry.Location;
+            if (location.Contains("http://"))
             {
-                previewHandlerHost1.Visible = false;
-                textPanel.Visible = false;
-                pictureBox1.Visible = false;
-                webBrowser1.Visible = true;
-
-                webBrowser1.Navigate(entry.Location);
+                DisplayUrl(location);
                 return;
             }
 
@@ -260,11 +273,7 @@ namespace FormsCombineArchive
             }
             else if (entry.Format.Contains("image/"))
             {
-                previewHandlerHost1.Visible = false;
-                webBrowser1.Visible = false;
-                pictureBox1.Visible = true;
-                textPanel.Visible = false;
-                pictureBox1.ImageLocation = filename;
+                ShowImage(filename);
             }
             else
             {
@@ -432,6 +441,25 @@ namespace FormsCombineArchive
             {
                 
             }
+        }
+
+        private void OnHomePageButtonClicked(object sender, EventArgs e)
+        {
+            DisplayUrl("http://fbergmann.github.io/CombineArchive");
+        }
+
+        private void OnSubmitBugClicked(object sender, EventArgs e)
+        {
+
+            try
+            {
+                System.Diagnostics.Process.Start("http://github.com/fbergmann/CombineArchive/issues");
+            }
+            catch 
+            {
+                
+            }
+            
         }
     }
 }
