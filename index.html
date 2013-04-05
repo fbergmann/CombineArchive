@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>CombineArchive by fbergmann</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/fbergmann/CombineArchive">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/fbergmann/CombineArchive/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/fbergmann/CombineArchive/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>CombineArchive</h1>
+          <p>Libraries and Tools for accessing the COMBINE archive</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/fbergmann">fbergmann</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>COMBINE Archive</h1>
+
+<p>In this project I keep a prototype library and a couple of applications that make working with the archive easier. This project contains of three parts: <code>LibCombine</code>, a library reading the format, <code>CombineCLI</code> a command line application and <code>FormsCombineArchive</code> that represents the information in a UI. At this point mostly the library is in use. </p>
+
+<h2>Library</h2>
+
+<p>The main class of the library is <code>CombineArchive</code>, you can construct new classes, and add local documents to it before saving it, or load existing ones, and browse through the contents. If you want to get hold of the manifest document, call the <code>.ToXML()</code> method.</p>
+
+<h3>How to use</h3>
+
+<p>Simply reference <code>LibCombine.dll</code> in your project, ensure that the file <code>ICSharpCode.SharpZipLib.dll</code> is also available, and you are ready to call the library. </p>
+
+<h3>OmexDescription</h3>
+
+<p>Apart from that the library features an <code>OmexDescription</code> description class, that can be used by those that don't have a proper RDF library handy, with it you could create the description for an element like so: </p>
+
+<pre><code>        var desc =
+            new OmexDescription
+            {
+                About = "./test.xml",
+                Description = "Some Description about the file",
+                Creators =
+                    new List&lt;VCard&gt; 
+                    { 
+                        new VCard 
+                        { 
+                            FamilyName = "Bergmann", 
+                            GivenName = "Frank", 
+                            Email = "fbergman@caltech.edu", 
+                            Organization = "California Institute of Technology" 
+                        } 
+                    },
+                Created = DateTime.Parse("2013-04-04 16:00+1")
+            };
+</code></pre>
+
+<p>To write that to an XML string, use the <code>ToXML</code> method. Conversely to parse from file or string, use the functions: </p>
+
+<pre><code>    var list = OmexDescription.ParseString(xmlString);
+</code></pre>
+
+<p>or: </p>
+
+<pre><code>    var list = OmexDescription.ParseFile(fileName);
+</code></pre>
+
+<h3>Creating a New Archive</h3>
+
+<p>The following is an example on how I would create a new <code>omex</code> file, by bundling a local SBML file and accompabying paper together with a reference to the <a href="http://biomodels.net/biomodel">BioModel</a>. First I define a <code>BaseDirectory</code> that serves as a root for my archive later on, and then I add a number of files: </p>
+
+<pre><code>         var newArchive = new CombineArchive
+         {
+             BaseDir = @"C:\Users\fbergmann\Documents\SBML Models\",
+             Descriptions = new List&lt;OmexDescription&gt; { 
+                 new OmexDescription
+            {
+                About = "./BorisEJB.xml",
+                Description = "original JDesigner model for Kholodenko2000 - MAPK feedback",
+                Creators =
+                    new List&lt;VCard&gt; 
+                    { 
+                        new VCard 
+                        { 
+                            FamilyName = "Bergmann", 
+                            GivenName = "Frank", 
+                            Email = "fbergman@caltech.edu", 
+                            Organization = "California Institute of Technology" 
+                        } 
+                    },
+                Created = DateTime.Parse("2013-04-04 16:00+1")
+            }
+             },
+             Entries = new List&lt;Entry&gt; { 
+                 new Entry { Location = "./BorisEJB.xml", Format = Entry.KnownFormats["sbml"] }, 
+                 new Entry { Location = "./paper/Kholodenko2000.pdf", Format = Entry.KnownFormats["pdf"] }, 
+                 new Entry { Location = "http://www.ebi.ac.uk/biomodels-main/BIOMD0000000010", Format = Entry.KnownFormats["sbml"] }, 
+             }
+         };
+
+         newArchive.SaveTo(@"C:\Users\fbergmann\Desktop\Boris.omex");
+</code></pre>
+
+<h3>Finding out what is in a COMBINE Archive</h3>
+
+<p>Suppose I would get a COMBINE archive, how would I find out about its contents? First you load the file: </p>
+
+<pre><code>var omex = CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\Boris.omex");
+</code></pre>
+
+<p>And then you would interrogate it by asking for its <code>Entries</code> property. Usually it will be the case that your application will only handle some of the COMBINE standards. In that case you want to use the methods: </p>
+
+<pre><code>// get the number of SBML files in the archive
+omex.GetNumFilesWithFormat("sbml") 
+
+// get the local filenames to them 
+omex.GetFilesWithFormat("sbml")
+
+// get the actual entries
+omex.GetEntriesWithFormat("sbml")
+</code></pre>
+
+<p>Since there can be any number of files in the archive, I use the convention, that the first <code>OmexDescription</code> in the metadata file represents the <code>MainFile</code> the name of which you can get through the according property.</p>
+
+<p>Using the <code>Entry</code> objects directly has the advantage, that you can <em>open</em> the files, in whatever application is associated with it, or read the contents either in form of <code>byte[]</code> or strings. Just as example, to open the PDF file encoded in the file above one could use these lines: </p>
+
+<pre><code>         var omex = CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\Boris.omex");
+
+         if (omex.HasEntriesWithFormat("pdf"))
+             omex.GetEntriesWithFormat("PDF").First().OpenLocation();
+</code></pre>
+
+<p>Here <code>GetEntriesWithFormat</code> returns a list of all PDFs, <code>First()</code> gives us the first entry, and <code>OpenLocation</code> opens the file. </p>
+
+<h2>The Format</h2>
+
+<p>Frequently we are faced with project spanning more than just one file. Be it experimental data, that should be stored together with a publication describing the experiment, or a computational model together with diagrams and metadata describing it in detail. <a href="http://sed-ml.org">SED-ML</a>, one of the <a href="http://co.mbine.org">COMBINE Standards</a>, started to develop a basic archive format that allowed storing a Simulation Experiment Description along with all computational models referenced. The <a href="http://co.mbine.org/documents/archive">COMBINE archive</a> aims to broaden the scope. It still is a <a href="http://en.wikipedia.org/wiki/Zip_(file_format">ZIP Archive</a>), but also features a manifest called <code>manifest.xml</code> that describes the contents of the archive. </p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;omexManifest xmlns="http://identifiers.org/combine.specifications/omex-manifest"&gt;
+  &lt;content location="./manifest.xml" format="http://identifiers.org/combine.specifications/omex-manifest"/&gt;
+  &lt;content location="./model/model.xml" format="http://identifiers.org/combine.specifications/sbml"/&gt;
+  &lt;content location="./simulation.xml" format="http://identifiers.org/combine.specifications/sedml"/&gt;
+  &lt;content location="./article.pdf" format="application/pdf"/&gt;
+  &lt;content location="./metadata.rdf" format="http://identifiers.org/combine.specifications/omex-metadata"/&gt;
+&lt;/omexManifest&gt;
+</code></pre>
+
+<h2>Third party libraries used</h2>
+
+<p>This project uses the following third party libraries: </p>
+
+<ul>
+<li><a href="http://www.icsharpcode.net/opensource/sharpziplib/">#ZipLib</a></li>
+</ul><h2>License</h2>
+
+<p>Copyright (c) 2013, Frank T. Bergmann<br>
+All rights reserved.</p>
+
+<p>Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met: </p>
+
+<ol>
+<li>Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer. </li>
+<li>Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution. </li>
+</ol><p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
