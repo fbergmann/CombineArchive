@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibCombine", "LibCombine\LibCombine.csproj", "{FA52A855-38B5-4110-9C69-D62FC7D9EF7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CombineCLI", "CombineCLI\CombineCLI.csproj", "{1CA41C80-EE9C-4C32-B7F0-621801257429}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormsCombineArchive", "FormsCombineArchive\FormsCombineArchive.csproj", "{A2D55519-57E2-497A-912F-3D857823E4B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA52A855-38B5-4110-9C69-D62FC7D9EF7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA52A855-38B5-4110-9C69-D62FC7D9EF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA52A855-38B5-4110-9C69-D62FC7D9EF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA52A855-38B5-4110-9C69-D62FC7D9EF7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA41C80-EE9C-4C32-B7F0-621801257429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA41C80-EE9C-4C32-B7F0-621801257429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA41C80-EE9C-4C32-B7F0-621801257429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA41C80-EE9C-4C32-B7F0-621801257429}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D55519-57E2-497A-912F-3D857823E4B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D55519-57E2-497A-912F-3D857823E4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D55519-57E2-497A-912F-3D857823E4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D55519-57E2-497A-912F-3D857823E4B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
