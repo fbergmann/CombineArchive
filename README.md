@@ -2,7 +2,11 @@
 In this project I keep a prototype library and a couple of applications that make working with the archive easier. This project contains of three parts: `LibCombine`, a library reading the format, `CombineCLI` a command line application and `FormsCombineArchive` that represents the information in a UI. At this point mostly the library is in use. 
 
 ## The UI
+The `CombineArchive` execuable is a windows application for creating / reading / modifying COMBINE archives. It associates with all files of type `*.omex` during installation. 
 
+![Frontend of CombineArchive](https://raw.github.com/fbergmann/CombineArchive/master/FormsCombineArchive/2013-04-10_-_Screenshot.png)
+
+Once the archive is opened, the files are displayed on the left side. When selected, their contents is displayed on the right. A **double click** on the file opens it. A **right click** displays a context menu from where the file or its contents can be copied to the clipboard. If an SBML file is selected, and SBW is available on the machine, the file can be sent to any SBW capable application, such as COPASI, JDesigner, RoadRunner to name but a few.  
 
 ## Command Line version
 With `CombineCLI`, a basic command line interface is included. At this point in time it is rather basic, and only lists the contents, or displays meta information associated with a document. For example:
