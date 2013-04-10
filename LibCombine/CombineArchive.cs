@@ -74,11 +74,14 @@ namespace LibCombine
             var name = Path.GetFileName(fileName);
             string tempFile = Path.Combine(BaseDir, name);
 
-            if (File.Exists(tempFile))
+            if (tempFile != fileName)
             {
-                File.Delete(tempFile); 
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+                File.Copy(fileName, tempFile);
             }
-            File.Copy(fileName, tempFile);
 
             var entry = new Entry
             {
