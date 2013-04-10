@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "COMBINE archive"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "1.1"
 !define PRODUCT_PUBLISHER "Frank T. Bergmann"
 !define PRODUCT_WEB_SITE "http://fbergmann.github.io/CombineArchive/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\FormsCombineArchive.exe"
@@ -26,7 +26,7 @@
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\FormsCombineArchive.exe"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.md"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -47,6 +47,7 @@ ShowUnInstDetails show
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
+  File "bin\CombineCLI.exe"
   File "bin\FormsCombineArchive.exe"
   CreateDirectory "$SMPROGRAMS\COMBINE archive"
   CreateShortCut "$SMPROGRAMS\COMBINE archive\COMBINE archive.lnk" "$INSTDIR\FormsCombineArchive.exe"
@@ -58,7 +59,7 @@ Section "MainSection" SEC01
   File "bin\LibCombine.pdb"
   File "bin\SBWCSharp.dll"
   SetOverwrite ifnewer
-  File "README.md"
+  File /oname=README.txt "README.md"
   ${registerExtension} "$INSTDIR\FormsCombineArchive.exe" ".omex" "COMBINE archive"
 SectionEnd
 
@@ -93,13 +94,15 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\README.md"
+  Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\SBWCSharp.dll"
   Delete "$INSTDIR\LibCombine.pdb"
   Delete "$INSTDIR\LibCombine.dll"
   Delete "$INSTDIR\ICSharpCode.SharpZipLib.dll"
   Delete "$INSTDIR\FormsCombineArchive.pdb"
   Delete "$INSTDIR\FormsCombineArchive.exe.config"
+
+  Delete "$INSTDIR\CombineCLI.exe"
   Delete "$INSTDIR\FormsCombineArchive.exe"
 
   Delete "$SMPROGRAMS\COMBINE archive\Uninstall.lnk"

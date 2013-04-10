@@ -10,6 +10,45 @@ using System;
 
 namespace LibCombine
 {
+
+    /// <summary>
+    /// Main entry point of LibCombine. The CombineArchive, can create
+    /// modify and store COMBINE archives.
+    /// </summary>
+    /// <example>
+    /// <![CDATA[
+    /// var newArchive = new CombineArchive
+    ///         {
+    ///             BaseDir = @"C:\Users\fbergmann\Documents\SBML Models\",
+    ///             Descriptions = new List< OmexDescription > { 
+    ///                 new OmexDescription
+    ///            {
+    ///                About = "./BorisEJB.xml",
+    ///                Description = "original JDesigner model for Kholodenko2000 - MAPK feedback",
+    ///                Creators =
+    ///                    new List< VCard > 
+    ///                    { 
+    ///                        new VCard 
+    ///                        { 
+    ///                            FamilyName = "Bergmann", 
+    ///                            GivenName = "Frank", 
+    ///                            Email = "fbergman@caltech.edu", 
+    ///                            Organization = "California Institute of Technology" 
+    ///                        } 
+    ///                    },
+    ///                Created = DateTime.Parse("2013-04-04 16:00+1")
+    ///            }
+    ///             },
+    ///             Entries = new List< Entry > { 
+    ///                 new Entry { Location = "./BorisEJB.xml", Format = Entry.KnownFormats["sbml"] }, 
+    ///                 new Entry { Location = "./paper/Kholodenko2000.pdf", Format = Entry.KnownFormats["pdf"] }, 
+    ///                 new Entry { Location = "http://www.ebi.ac.uk/biomodels-main/BIOMD0000000010", Format = Entry.KnownFormats["sbml"] }, 
+    ///             }
+    ///         };
+    ///
+    ///         newArchive.SaveTo(@"C:\Users\fbergmann\Desktop\Boris.omex");
+    ///]]>
+    /// </example>
     public class CombineArchive : IEnumerable<Entry>
     {
         const string omexNs = "http://identifiers.org/combine.specifications/omex-manifest";
@@ -22,7 +61,7 @@ namespace LibCombine
 
         public string BaseDir { get; set; }
 
-        public string MainFile { get; set; }
+        public Entry MainEntry { get; set; }
 
         public Entry AddEntry(string fileName, string format, OmexDescription description)
         {
@@ -98,6 +137,33 @@ namespace LibCombine
 
 
         /// <summary>
+        /// Constructs a new archive document from the buffer
+        /// </summary>
+        /// <param name="buffer">buffer holding an omex archive.</param>
+        /// <returns>the archive</returns>
+        public static CombineArchive FromBuffer(byte[] buffer)
+        {
+            var file = Path.GetTempFileName();
+            File.WriteAllBytes(file, buffer);
+            try
+            {
+                return FromFile(file);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch 
+                {
+                    // ignore
+                }
+            }
+            
+        }
+
+        /// <summary>
         /// Constructs a new archive document from the given filename
         /// </summary>
         /// <param name="fileName">Name of the file to load.</param>
@@ -111,6 +177,7 @@ namespace LibCombine
 
         private void ParseManifest(string fileName)
         {
+            MainEntry = null;
             var doc = new XmlDocument();
             doc.Load(fileName);
             var list = doc.DocumentElement.GetElementsByTagName("content", omexNs);
@@ -119,12 +186,16 @@ namespace LibCombine
                 var element = (XmlElement)xmlNode;
                 var location = element.GetAttribute("location");
                 var format = element.GetAttribute("format");
-                Entries.Add(new Entry
-                {
-                    Archive = this, 
-                    Location = location,
-                    Format = format
-                });
+                var master = element.GetAttribute("master");
+                var entry = new Entry
+                                {
+                                    Archive = this,
+                                    Location = location,
+                                    Format = format
+                                };
+                if (!string.IsNullOrWhiteSpace(master) && master.ToLowerInvariant() == "true")
+                    MainEntry = entry;
+                Entries.Add(entry);
             }
 
             var descEntries = Entries.Where(s => s.Format == Entry.KnownFormats["omex"]).ToList();
@@ -138,9 +209,9 @@ namespace LibCombine
 
             Entries.RemoveAll(e => e.Format == Entry.KnownFormats["omex"] || e.Format == Entry.KnownFormats["manifest"]);
 
-            if (Descriptions.Count > 0)
+            if (Descriptions.Count > 0 && MainEntry == null)
             {
-                MainFile = Descriptions[0].About;
+                MainEntry = Entries.FirstOrDefault(e => e.Description != null);
             }
 
         }
@@ -225,7 +296,8 @@ namespace LibCombine
                             .Replace("././", "./")
                             .Replace("./\\", "./")
                             ), 
-                        new XAttribute("format", entry.Format)));
+                        new XAttribute("format", entry.Format),
+                        new XAttribute("master", entry == MainEntry ? "true" : "false")));
             }
             var srcTree = new XDocument(root);
             return 

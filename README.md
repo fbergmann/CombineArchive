@@ -1,6 +1,25 @@
 # COMBINE Archive
 In this project I keep a prototype library and a couple of applications that make working with the archive easier. This project contains of three parts: `LibCombine`, a library reading the format, `CombineCLI` a command line application and `FormsCombineArchive` that represents the information in a UI. At this point mostly the library is in use. 
 
+## The UI
+
+
+## Command Line version
+With `CombineCLI`, a basic command line interface is included. At this point in time it is rather basic, and only lists the contents, or displays meta information associated with a document. For example:
+
+
+	CombineCLI -o <path to omex file>
+
+will list the contents of the archive.
+
+	CombineCLI -o <path to omex file> -v -l <location>
+
+will display associated with the given location of the archive. Alternatively 
+
+	CombineCLI -o <path to omex file> -v -f <format>
+
+can be used to view the information with the first file of the given format. 
+
 ## Library
 The main class of the library is `CombineArchive`, you can construct new classes, and add local documents to it before saving it, or load existing ones, and browse through the contents. If you want to get hold of the manifest document, call the `.ToXML()` method.
 
