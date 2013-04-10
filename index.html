@@ -42,6 +42,33 @@
 
 <p>In this project I keep a prototype library and a couple of applications that make working with the archive easier. This project contains of three parts: <code>LibCombine</code>, a library reading the format, <code>CombineCLI</code> a command line application and <code>FormsCombineArchive</code> that represents the information in a UI. At this point mostly the library is in use. </p>
 
+<h2>The UI</h2>
+
+<p>The <code>CombineArchive</code> execuable is a windows application for creating / reading / modifying COMBINE archives. It associates with all files of type <code>*.omex</code> during installation. </p>
+
+<p><img src="https://raw.github.com/fbergmann/CombineArchive/master/FormsCombineArchive/2013-04-10_-_Screenshot.png" alt="Frontend of CombineArchive"></p>
+
+<p>Once the archive is opened, the files are displayed on the left side. When selected, their contents is displayed on the right. A <strong>double click</strong> on the file opens it. A <strong>right click</strong> displays a context menu from where the file or its contents can be copied to the clipboard. If an SBML file is selected, and SBW is available on the machine, the file can be sent to any SBW capable application, such as COPASI, JDesigner, RoadRunner to name but a few.  </p>
+
+<h2>Command Line version</h2>
+
+<p>With <code>CombineCLI</code>, a basic command line interface is included. At this point in time it is rather basic, and only lists the contents, or displays meta information associated with a document. For example:</p>
+
+<pre><code>CombineCLI -o &lt;path to omex file&gt;
+</code></pre>
+
+<p>will list the contents of the archive.</p>
+
+<pre><code>CombineCLI -o &lt;path to omex file&gt; -v -l &lt;location&gt;
+</code></pre>
+
+<p>will display associated with the given location of the archive. Alternatively </p>
+
+<pre><code>CombineCLI -o &lt;path to omex file&gt; -v -f &lt;format&gt;
+</code></pre>
+
+<p>can be used to view the information with the first file of the given format. </p>
+
 <h2>Library</h2>
 
 <p>The main class of the library is <code>CombineArchive</code>, you can construct new classes, and add local documents to it before saving it, or load existing ones, and browse through the contents. If you want to get hold of the manifest document, call the <code>.ToXML()</code> method.</p>
