@@ -123,6 +123,7 @@ namespace LibCombine
                     var dir = Path.GetDirectoryName(sName);
                     if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
                         Directory.CreateDirectory(dir);
+                    if (entry.IsDirectory) continue;
                     var streamWriter = File.Create(sName);
                     var data = new byte[CHUNK_SIZE];
                     while (true)
