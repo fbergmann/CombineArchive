@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -119,32 +120,85 @@ namespace LibCombine
                 ZipEntry entry;
                 while ((entry = stream.GetNextEntry()) != null)
                 {
-                    var sName = Path.Combine(destination, entry.Name);
+                    var sName = Path.Combine(destination, ZipEntry.CleanName(entry.Name));
                     var dir = Path.GetDirectoryName(sName);
-                    if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
-                    if (entry.IsDirectory) continue;
-                    var streamWriter = File.Create(sName);
-                    var data = new byte[CHUNK_SIZE];
-                    while (true)
+                    try
                     {
-                        var size = stream.Read(data, 0, data.Length);
-                        if (size > 0)
-                        {
-                            streamWriter.Write(data, 0, size);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(Path.Combine(destination, dir)))
+                            Directory.CreateDirectory(Path.Combine(destination, dir));
                     }
-                    streamWriter.Close();
+                    catch 
+                    {
+                        
+                    }
+                    if (entry.IsDirectory) continue;
+                    try
+                    {
+                        var streamWriter = File.Create(sName);
+                        var data = new byte[CHUNK_SIZE];
+                        while (true)
+                        {
+                            var size = stream.Read(data, 0, data.Length);
+                            if (size > 0)
+                            {
+                                streamWriter.Write(data, 0, size);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        streamWriter.Close();
+                    }
+                    catch 
+                    {
+                        
+                    }
                 }
                 return destination;
             }
         }
 
 
+        private static void CreateDirs(ZipOutputStream zipStream, IEnumerable<string> files, string baseDir)
+        {
+            var dirs = new List<string>();
+            foreach (string filename in files)
+            {
+                var fi = new FileInfo(filename);
+                var dir = fi.DirectoryName;
+                if (!string.IsNullOrEmpty(baseDir) && dir.StartsWith(baseDir))
+                    dir = dir.Replace(baseDir, "");
+                else dir = "";
+
+                dir = dir.Trim();
+                while (dir.StartsWith("" + Path.DirectorySeparatorChar))
+                    dir = dir.Substring(1);
+
+                if (!string.IsNullOrWhiteSpace(dir) && !dirs.Contains(dir))
+                {
+                    dirs.Add(dir);
+                    int index;
+                    while ((index = dir.LastIndexOf(Path.DirectorySeparatorChar)) != -1)
+                    {
+                        dir = dir.Substring(0, index);
+
+                        if (!string.IsNullOrWhiteSpace(dir) && !dirs.Contains(dir))
+                            dirs.Add(dir);
+                    }
+                }
+
+            }
+
+            dirs.Sort();
+            var factory = new ZipEntryFactory();
+            foreach (var item in dirs)
+            {
+                //System.Diagnostics.Debug.WriteLine("found " + item);
+                zipStream.PutNextEntry(factory.MakeDirectoryEntry(item ));
+            }
+
+        }
         /// <summary>
         /// Zips up all the given files, as archive with the given name
         /// </summary>
@@ -156,6 +210,9 @@ namespace LibCombine
             var fsOut = File.Create(fileName);
             var zipStream = new ZipOutputStream(fsOut);
             zipStream.SetLevel(9);
+            
+            CreateDirs(zipStream, files, baseDir);
+
 
             foreach (string filename in files)
             {
@@ -164,6 +221,11 @@ namespace LibCombine
                 if (!string.IsNullOrEmpty(baseDir) && dir.StartsWith(baseDir))
                     dir = dir.Replace(baseDir, "");
                 else dir = "";
+
+                dir = dir.Trim();
+                while (dir.StartsWith("" + Path.DirectorySeparatorChar))
+                    dir = dir.Substring(1);
+
                 string entryName = ((FileInfo)fi).Name;
                 entryName = ZipEntry.CleanName(entryName);
                 var newEntry = new ZipEntry(Path.Combine(dir, entryName));
