@@ -142,6 +142,8 @@ This project uses the following third party libraries:
 - [#ZipLib](http://www.icsharpcode.net/opensource/sharpziplib/)
 
 ## License 
+This project is open source and freely available under the [Simplified BSD](http://opensource.org/licenses/BSD-2-Clause) license. Should that license not meet your needs, please contact me. 
+
 Copyright (c) 2013, Frank T. Bergmann  
 All rights reserved.
 
