@@ -195,7 +195,7 @@ namespace LibCombine
             foreach (var item in dirs)
             {
                 //System.Diagnostics.Debug.WriteLine("found " + item);
-                zipStream.PutNextEntry(factory.MakeDirectoryEntry(item ));
+                zipStream.PutNextEntry(factory.MakeDirectoryEntry(ZipEntry.CleanName(item)));
             }
 
         }
@@ -228,7 +228,7 @@ namespace LibCombine
 
                 string entryName = ((FileInfo)fi).Name;
                 entryName = ZipEntry.CleanName(entryName);
-                var newEntry = new ZipEntry(Path.Combine(dir, entryName));
+                var newEntry = new ZipEntry(ZipEntry.CleanName(Path.Combine(dir, entryName)));
                 ((ZipEntry)newEntry).DateTime = ((FileInfo)fi).LastWriteTime;
                 ((ZipEntry)newEntry).Size = ((FileInfo)fi).Length;
                 zipStream.PutNextEntry(((ZipEntry)newEntry));
