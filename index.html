@@ -35,14 +35,16 @@
           <p>Libraries and Tools for accessing the COMBINE archive</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/fbergmann">fbergmann</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
-        <h1>COMBINE Archive</h1>
+        <h1>
+<a name="combine-archive" class="anchor" href="#combine-archive"><span class="octicon octicon-link"></span></a>COMBINE Archive</h1>
 
 <p>In this project I keep a prototype library and a couple of applications that make working with the archive easier. This project contains of three parts: <code>LibCombine</code>, a library reading the format, <code>CombineCLI</code> a command line application and <code>FormsCombineArchive</code> that represents the information in a UI. At this point mostly the library is in use. </p>
 
-<h2>The UI</h2>
+<h2>
+<a name="the-ui" class="anchor" href="#the-ui"><span class="octicon octicon-link"></span></a>The UI</h2>
 
 <p>The <code>CombineArchive</code> execuable is a windows application for creating / reading / modifying COMBINE archives. It associates with all files of type <code>*.omex</code> during installation. </p>
 
@@ -50,7 +52,15 @@
 
 <p>Once the archive is opened, the files are displayed on the left side. When selected, their contents is displayed on the right. A <strong>double click</strong> on the file opens it. A <strong>right click</strong> displays a context menu from where the file or its contents can be copied to the clipboard. If an SBML file is selected, and SBW is available on the machine, the file can be sent to any SBW capable application, such as COPASI, JDesigner, RoadRunner to name but a few.  </p>
 
-<h2>Command Line version</h2>
+<h3>
+<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h3>
+
+<p>You can download the latest Windows binary from: </p>
+
+<p><a href="http://sourceforge.net/projects/sbw/files/modules/CombineArchive/">http://sourceforge.net/projects/sbw/files/modules/CombineArchive/</a></p>
+
+<h2>
+<a name="command-line-version" class="anchor" href="#command-line-version"><span class="octicon octicon-link"></span></a>Command Line version</h2>
 
 <p>With <code>CombineCLI</code>, a basic command line interface is included. At this point in time it is rather basic, and only lists the contents, or displays meta information associated with a document. For example:</p>
 
@@ -69,15 +79,18 @@
 
 <p>can be used to view the information with the first file of the given format. </p>
 
-<h2>Library</h2>
+<h2>
+<a name="library" class="anchor" href="#library"><span class="octicon octicon-link"></span></a>Library</h2>
 
 <p>The main class of the library is <code>CombineArchive</code>, you can construct new classes, and add local documents to it before saving it, or load existing ones, and browse through the contents. If you want to get hold of the manifest document, call the <code>.ToXML()</code> method.</p>
 
-<h3>How to use</h3>
+<h3>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h3>
 
 <p>Simply reference <code>LibCombine.dll</code> in your project, ensure that the file <code>ICSharpCode.SharpZipLib.dll</code> is also available, and you are ready to call the library. </p>
 
-<h3>OmexDescription</h3>
+<h3>
+<a name="omexdescription" class="anchor" href="#omexdescription"><span class="octicon octicon-link"></span></a>OmexDescription</h3>
 
 <p>Apart from that the library features an <code>OmexDescription</code> description class, that can be used by those that don't have a proper RDF library handy, with it you could create the description for an element like so: </p>
 
@@ -111,7 +124,8 @@
 <pre><code>    var list = OmexDescription.ParseFile(fileName);
 </code></pre>
 
-<h3>Creating a New Archive</h3>
+<h3>
+<a name="creating-a-new-archive" class="anchor" href="#creating-a-new-archive"><span class="octicon octicon-link"></span></a>Creating a New Archive</h3>
 
 <p>The following is an example on how I would create a new <code>omex</code> file, by bundling a local SBML file and accompabying paper together with a reference to the <a href="http://biomodels.net/biomodel">BioModel</a>. First I define a <code>BaseDirectory</code> that serves as a root for my archive later on, and then I add a number of files: </p>
 
@@ -147,7 +161,8 @@
          newArchive.SaveTo(@"C:\Users\fbergmann\Desktop\Boris.omex");
 </code></pre>
 
-<h3>Finding out what is in a COMBINE Archive</h3>
+<h3>
+<a name="finding-out-what-is-in-a-combine-archive" class="anchor" href="#finding-out-what-is-in-a-combine-archive"><span class="octicon octicon-link"></span></a>Finding out what is in a COMBINE Archive</h3>
 
 <p>Suppose I would get a COMBINE archive, how would I find out about its contents? First you load the file: </p>
 
@@ -178,7 +193,8 @@ omex.GetEntriesWithFormat("sbml")
 
 <p>Here <code>GetEntriesWithFormat</code> returns a list of all PDFs, <code>First()</code> gives us the first entry, and <code>OpenLocation</code> opens the file. </p>
 
-<h2>The Format</h2>
+<h2>
+<a name="the-format" class="anchor" href="#the-format"><span class="octicon octicon-link"></span></a>The Format</h2>
 
 <p>Frequently we are faced with project spanning more than just one file. Be it experimental data, that should be stored together with a publication describing the experiment, or a computational model together with diagrams and metadata describing it in detail. <a href="http://sed-ml.org">SED-ML</a>, one of the <a href="http://co.mbine.org">COMBINE Standards</a>, started to develop a basic archive format that allowed storing a Simulation Experiment Description along with all computational models referenced. The <a href="http://co.mbine.org/documents/archive">COMBINE archive</a> aims to broaden the scope. It still is a <a href="http://en.wikipedia.org/wiki/Zip_(file_format">ZIP Archive</a>), but also features a manifest called <code>manifest.xml</code> that describes the contents of the archive. </p>
 
@@ -192,13 +208,17 @@ omex.GetEntriesWithFormat("sbml")
 &lt;/omexManifest&gt;
 </code></pre>
 
-<h2>Third party libraries used</h2>
+<h2>
+<a name="third-party-libraries-used" class="anchor" href="#third-party-libraries-used"><span class="octicon octicon-link"></span></a>Third party libraries used</h2>
 
 <p>This project uses the following third party libraries: </p>
 
 <ul>
 <li><a href="http://www.icsharpcode.net/opensource/sharpziplib/">#ZipLib</a></li>
-</ul><h2>License</h2>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This project is open source and freely available under the <a href="http://opensource.org/licenses/BSD-2-Clause">Simplified BSD</a> license. Should that license not meet your needs, please contact me. </p>
 
 <p>Copyright (c) 2013, Frank T. Bergmann<br>
 All rights reserved.</p>
