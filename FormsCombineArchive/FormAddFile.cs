@@ -47,14 +47,15 @@ namespace FormsCombineArchive
         {
             get
             {
-                return new OmexDescription { 
+              var creators = new List<VCard> { controlCreator1.VCard };
+              return new OmexDescription { 
                     Created = DateTime.UtcNow,
-                    Creators = new List<VCard> { controlCreator1.VCard }, 
+                    Creators = creators, 
                     Description = textBox1.Text, 
                     About = FileName
                 };
-            } 
-            set
+            }
+          set
             {
                 if (value.Creators != null && value.Creators.Count > 0)
                     controlCreator1.VCard = value.Creators[0];

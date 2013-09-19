@@ -44,7 +44,7 @@ namespace LibCombine
         {
             get
             {
-                return !string.IsNullOrWhiteSpace(FamilyName) || !string.IsNullOrWhiteSpace(GivenName);
+                return string.IsNullOrWhiteSpace(FamilyName) || string.IsNullOrWhiteSpace(GivenName);
             }
         }
         public string ToXML()

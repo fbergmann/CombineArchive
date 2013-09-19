@@ -20,6 +20,7 @@ namespace LibCombine
             {"sbgn", "http://identifiers.org/combine.specifications/sbgn" },
             {"omex", "http://identifiers.org/combine.specifications/omex-metadata" },
             {"manifest", "http://identifiers.org/combine.specifications/omex-manifest" },
+            {"sedx", "application/x-sed-ml-archive" },
             {"png", "image/png" },            
             {"csv", "text/csv" },
             {"323", "text/h323"},

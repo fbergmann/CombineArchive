@@ -32,7 +32,13 @@ namespace LibCombine
         {
             get
             {
-                return !string.IsNullOrWhiteSpace(Description) || (Creators != null && Creators.Count > 0 && !Creators[0].Empty);
+              bool haveDescription = !string.IsNullOrWhiteSpace(Description);
+              if (!haveDescription) return true;
+              bool haveCreator = Creators != null && Creators.Count > 0;
+              if (!haveCreator) return true;
+              bool firstCreatorEmpty = Creators[0].Empty;
+              if (firstCreatorEmpty) return true;
+              return false;
             }
         }
         public List<DateTime> Modified { get; set; }
