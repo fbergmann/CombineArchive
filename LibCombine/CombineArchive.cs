@@ -108,7 +108,7 @@ namespace LibCombine
         {
             UpdateRefs();
 
-            var files = Entries.Where(e => e.Format == format || e.Format == Entry.KnownFormats[format.ToLowerInvariant()]).ToList();
+            var files = Entries.Where(e => e.Format == format || Entry.KnownFormats[format.ToLowerInvariant()].Contains(e.Format)).ToList();
             return files;
         }
 
@@ -201,7 +201,7 @@ namespace LibCombine
                 Entries.Add(entry);
             }
 
-            var descEntries = Entries.Where(s => s.Format == Entry.KnownFormats["omex"]).ToList();
+            var descEntries = Entries.Where(s => Entry.KnownFormats["omex"].Contains(s.Format)).ToList();
             foreach (var entry in descEntries)
             {
                 string entryLocation = entry.Location;
@@ -210,7 +210,7 @@ namespace LibCombine
                 Descriptions.AddRange(OmexDescription.ParseFile(Path.Combine(BaseDir, entryLocation)));
             }
 
-            Entries.RemoveAll(e => e.Format == Entry.KnownFormats["omex"] || e.Format == Entry.KnownFormats["manifest"]);
+            Entries.RemoveAll(e => Entry.KnownFormats["omex"].Contains(e.Format) || Entry.KnownFormats["manifest"].Contains(e.Format));
 
             if (Descriptions.Count > 0 && MainEntry == null)
             {
@@ -257,10 +257,10 @@ namespace LibCombine
         public void SaveTo(string fileName)
         {
             var manifestFile = Path.Combine(BaseDir, "manifest.xml");
+
+            Entries.RemoveAll(e => e.Location == manifestFile || Entry.KnownFormats["omex"].Contains(e.Format) && e.GetLocalFileName() != null);
             
-            Entries.RemoveAll(e => e.Location == manifestFile || e.Format == Entry.KnownFormats["omex"] && e.GetLocalFileName() != null);
-            
-            Entries.Insert(0, new Entry { Location = manifestFile, Format = Entry.KnownFormats["manifest"] });            
+            Entries.Insert(0, new Entry { Location = manifestFile, Format = Entry.KnownFormatsList["manifest"].FirstOrDefault() });            
 
             UpdateRefs();
 
@@ -269,7 +269,7 @@ namespace LibCombine
             {
                 var metadataFile = Path.Combine(BaseDir, string.Format("manifest{0}.xml", i));
                 File.WriteAllText(metadataFile, Descriptions[i].ToXML());
-                Entries.Add(new Entry { Archive = this, Location = metadataFile, Format = Entry.KnownFormats["omex"] });
+                Entries.Add(new Entry { Archive = this, Location = metadataFile, Format = Entry.KnownFormatsList["omex"].FirstOrDefault() });
             }
 
             WriteManifestTo(manifestFile);
@@ -287,7 +287,7 @@ namespace LibCombine
         /// <returns></returns>
         public string ToManifest()
         {
-            XNamespace ns = Entry.KnownFormats["manifest"];
+          XNamespace ns = Entry.KnownFormatsList["manifest"].FirstOrDefault();
             var root = new XElement(ns + "omexManifest");
             foreach (var entry in Entries)
             {
