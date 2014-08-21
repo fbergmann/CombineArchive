@@ -294,7 +294,7 @@ namespace LibCombine
 
             for (int i = 0; i < Descriptions.Count; i++)
             {
-                var metadataFile = Path.Combine(BaseDir, string.Format("manifest{0}.xml", i));
+                var metadataFile = Path.Combine(BaseDir, string.Format("metadata{0}.xml", i));
                 File.WriteAllText(metadataFile, Descriptions[i].ToXML());
                 Entries.Add(new Entry { Archive = this, Location = metadataFile, Format = Entry.KnownFormatsList["omex"].FirstOrDefault() });
             }
