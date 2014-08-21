@@ -275,6 +275,22 @@ namespace LibCombine
 
         }
 
+        public static bool IsFormat(string formatKey, string format)
+        {
+          if (KnownFormats.ContainsKey(formatKey))
+            return KnownFormats[formatKey].Contains(format);
+          
+          return false;
+
+        }
+
+        public static string LookupFormat(string format)
+        {
+          if (KnownFormats.ContainsKey(format))
+            return KnownFormats[format];
+          return string.Empty;
+        }
+
         /// <summary>
         /// Opens the Entry with the program associated with it.
         /// </summary>

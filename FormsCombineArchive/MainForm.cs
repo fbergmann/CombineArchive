@@ -48,15 +48,15 @@ namespace FormsCombineArchive
 
     private ListViewGroup GetGroupForFormat(string format)
     {
-      if (Entry.KnownFormats["sbml"].Contains(format))
+      if (Entry.IsFormat("sbml", format))
         return grpSBML;
-      if (Entry.KnownFormats["sedml"].Contains(format))
+      if (Entry.IsFormat("sedml", format))
         return grpSEDML;
-      if (Entry.KnownFormats["sbgn"].Contains(format))
+      if (Entry.IsFormat("sbgn", format))
         return grpSBGN;
-      if (Entry.KnownFormats["csv"].Contains(format))
+      if (Entry.IsFormat("csv", format) || Entry.IsFormat("numl", format))
         return grpData;
-      if (Entry.KnownFormats["pdf"].Contains(format) ||
+      if (Entry.IsFormat("pdf", format) ||
           format.Contains("text/"))
         return grpDoc;
       if (format.Contains("image/"))
@@ -250,7 +250,7 @@ namespace FormsCombineArchive
 
       if (entry.Description != null) lblMessage.Text = entry.Description.Description.Trim();
 
-      if (Entry.KnownFormats["sbml"].Contains(entry.Format) && controlSBWAnalyzer1.IsAvailable)
+      if (Entry.IsFormat("sbml",entry.Format) && controlSBWAnalyzer1.IsAvailable)
       {
 
         controlSBWAnalyzer1.Visible = true;

@@ -77,9 +77,9 @@ namespace FormsCombineArchive
 
         private void Lookup(string format)
         {
-            if (Entry.KnownFormats.ContainsKey(format))
-                Format = Entry.KnownFormats[format];
+          Format = Entry.LookupFormat(format);
         }
+
         private void cmdLookup_Click(object sender, EventArgs e)
         {
             string format = Format.ToLowerInvariant();
