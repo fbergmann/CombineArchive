@@ -165,14 +165,15 @@ public class PreviewHandlerHost : Control
         }
 
 
-        var filename = Path.GetTempFileName() + "." + Path.GetExtension(originalFile);
+        var filename = String.Format("{0}.{1}", Path.GetTempFileName(), Path.GetExtension(originalFile));
 
         try
         {
             File.Copy(originalFile, filename);
         }
-        catch (Exception ex)
+        catch 
         {
+
             return false;
         }
 

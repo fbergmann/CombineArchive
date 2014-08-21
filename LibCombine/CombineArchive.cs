@@ -219,11 +219,38 @@ namespace LibCombine
 
         }
 
+        private void InitializeFromDir(string fileName)
+        {
+          bool isSed = Path.GetExtension(fileName).IsOneOf(".sedx");
+          string mainFile = Path.Combine(BaseDir, Path.GetFileName(fileName) + ".xml");
+          if (!File.Exists(mainFile))
+            mainFile = Path.Combine(BaseDir, Path.GetFileNameWithoutExtension(fileName) + ".xml");
+          Entries.Clear();
+
+          var files = Directory.GetFiles(BaseDir);
+          foreach (var file in files)
+          {
+            Entry entry = new Entry
+                        {
+                          Archive = this,
+                          Format = Entry.GuessFormat(file),
+                          Location = file.Replace(BaseDir, ".") 
+                        };
+            Entries.Add(entry);
+
+            if (file == mainFile)
+              MainEntry = entry;
+          }
+        }
         public void InitializeFromArchive(string fileName)
         {
-            BaseDir = Util.UnzipArchive(fileName);
-            ParseManifest(Path.Combine(BaseDir, "manifest.xml"));
-            ArchiveFileName = fileName;
+          BaseDir = Util.UnzipArchive(fileName);
+          string manifest = Path.Combine(BaseDir, "manifest.xml");
+          if (File.Exists(manifest))
+            ParseManifest(manifest);
+          else InitializeFromDir(fileName);
+
+          ArchiveFileName = fileName;
         }
 
         /// <summary>
@@ -298,6 +325,7 @@ namespace LibCombine
                             .Replace(BaseDir, "./")
                             .Replace("././", "./")
                             .Replace("./\\", "./")
+                            .Replace("./manifest.xml", ".")
                             ), 
                         new XAttribute("format", entry.Format),
                         new XAttribute("master", entry == MainEntry ? "true" : "false")));

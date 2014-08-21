@@ -14,6 +14,16 @@ namespace LibCombine
     /// </summary>
     public static class Util
     {
+
+      public static bool IsOneOf(this string str, params string[] strings)
+      {
+        if (string.IsNullOrWhiteSpace(str)) return false;
+        foreach (var s in  strings)
+          if (str.ToLowerInvariant() == s.ToLowerInvariant())
+            return true;
+        return false;
+      }
+
         /// <summary>
         /// Gets the bytes for the given location URL.
         /// </summary>

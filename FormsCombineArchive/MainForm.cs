@@ -125,7 +125,7 @@ namespace FormsCombineArchive
 
     private void OnOpenClicked(object sender, EventArgs e)
     {
-      using (var dialog = new OpenFileDialog { Filter = "OMEX files|*.omex|All files|*.*" })
+      using (var dialog = new OpenFileDialog { Filter = "OMEX files|*.omex;*.sedx;*.sbex;*.cmex;*.phex;*.neux;*.sbox|All files|*.*" })
       {
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
@@ -160,7 +160,7 @@ namespace FormsCombineArchive
 
     private void OnSaveClicked(object sender, EventArgs e)
     {
-      using (var dialog = new SaveFileDialog { Filter = "OMEX files|*.omex|All files|*.*" })
+      using (var dialog = new SaveFileDialog { Filter = "OMEX files|*.omex;*.sedx;*.sbex;*.cmex;*.phex;*.neux;*.sbox|All files|*.*" })
       {
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
@@ -289,7 +289,9 @@ namespace FormsCombineArchive
         webBrowser1.Visible = false;
         pictureBox1.Visible = false;
         textPanel.Visible = true;
-        textBox1.Text = entry.GetContents();
+        textBox1.Text = entry.GetContents()
+          .Replace("\n", Environment.NewLine)
+          .Replace("\r\r", "\r");
       }
     }
 
@@ -327,7 +329,7 @@ namespace FormsCombineArchive
     {
       var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
       var oInfo = new FileInfo(sFilenames[0]);
-      if (oInfo.Extension.ToLower() == ".omex")
+      if (oInfo.Extension.IsOneOf( ".omex", ".sedx", ".sbex", ".cmex", ".neux", ".phex", ".sbox"))
       {
         OpenFile(sFilenames[0]);
       }
@@ -393,7 +395,7 @@ namespace FormsCombineArchive
             File.Copy(local, dialog.FileName);
         }
       }
-      catch (Exception ex)
+      catch 
       {
 
       }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace LibCombine
 {
@@ -273,6 +275,28 @@ namespace LibCombine
 
             return null;
 
+        }
+
+        public static string GuessFormat(string fileName)
+        {
+          var ext = Path.GetExtension(fileName);
+          if (ext == ".xml")
+          {
+            using (var reader = File.OpenRead(fileName))
+            {
+              var buffer = new byte[512];
+              reader.Read(buffer, 0, 512);
+              var snippet =
+              Encoding.UTF8.GetString(buffer);
+
+              if (snippet.Contains("<sbml")) return LookupFormat("sbml");
+              if (snippet.Contains("<sedML")) return LookupFormat("sedml");
+              if (snippet.Contains("<cell")) return LookupFormat("cellml");
+            }
+          }
+          string extension = ext.Replace(".", "");
+          var format = LookupFormat(extension);
+          return format;
         }
 
         public static bool IsFormat(string formatKey, string format)
