@@ -51,7 +51,7 @@
             this.copyContentToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.textPanel = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.ctrlPlainText = new ControlPlainTextEdit();
             this.controlSBWAnalyzer1 = new FormsCombineArchive.ControlSBWAnalyzer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
@@ -265,7 +265,7 @@
             // 
             // textPanel
             // 
-            this.textPanel.Controls.Add(this.textBox1);
+            this.textPanel.Controls.Add(this.ctrlPlainText);
             this.textPanel.Controls.Add(this.controlSBWAnalyzer1);
             this.textPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textPanel.Location = new System.Drawing.Point(0, 0);
@@ -274,17 +274,14 @@
             this.textPanel.TabIndex = 5;
             this.textPanel.Visible = false;
             // 
-            // textBox1
+            // ctrlPlainText
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.MaxLength = 0;
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(590, 515);
-            this.textBox1.TabIndex = 1;
+            this.ctrlPlainText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctrlPlainText.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ctrlPlainText.Location = new System.Drawing.Point(0, 0);
+            this.ctrlPlainText.Name = "ctrlPlainText";
+            this.ctrlPlainText.Size = new System.Drawing.Size(590, 515);
+            this.ctrlPlainText.TabIndex = 1;
             // 
             // controlSBWAnalyzer1
             // 
@@ -718,7 +715,7 @@
         private System.Windows.Forms.ImageList imageList1;
         private PreviewHandlerHost previewHandlerHost1;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.TextBox textBox1;
+        private ControlPlainTextEdit ctrlPlainText;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

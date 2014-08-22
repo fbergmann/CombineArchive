@@ -62,6 +62,12 @@
     <Compile Include="ControlCreator.Designer.cs">
       <DependentUpon>ControlCreator.cs</DependentUpon>
     </Compile>
+    <Compile Include="ControlPlainTextEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPlainTextEdit.Designer.cs">
+      <DependentUpon>ControlPlainTextEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlSBWAnalyzer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -96,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlCreator.resx">
       <DependentUpon>ControlCreator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPlainTextEdit.resx">
+      <DependentUpon>ControlPlainTextEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlSBWAnalyzer.resx">
       <DependentUpon>ControlSBWAnalyzer.cs</DependentUpon>

@@ -187,8 +187,8 @@ namespace FormsCombineArchive
 
     private void OnCopyClicked(object sender, EventArgs e)
     {
-      if (textBox1.Focused)
-        textBox1.Copy();
+      if (ctrlPlainText.Focused)
+        ctrlPlainText.Copy();
       else
         OnCopyItemToClipboard(sender, e);
     }
@@ -200,7 +200,7 @@ namespace FormsCombineArchive
 
     private void OnSelectAllClicked(object sender, EventArgs e)
     {
-      textBox1.SelectAll();
+      ctrlPlainText.SelectAll();
     }
 
 
@@ -289,9 +289,7 @@ namespace FormsCombineArchive
         webBrowser1.Visible = false;
         pictureBox1.Visible = false;
         textPanel.Visible = true;
-        textBox1.Text = entry.GetContents()
-          .Replace("\n", Environment.NewLine)
-          .Replace("\r\r", "\r");
+        ctrlPlainText.InitializeFromFile(filename);
       }
     }
 
