@@ -234,7 +234,11 @@ namespace LibCombine
                         {
                           Archive = this,
                           Format = Entry.GuessFormat(file),
-                          Location = file.Replace(BaseDir, ".") 
+                          Location = file
+                            .Replace(BaseDir, "./")
+                            .Replace("././", "./")
+                            .Replace("./\\", "./")
+                            .Replace("./manifest.xml", ".")
                         };
             Entries.Add(entry);
 
