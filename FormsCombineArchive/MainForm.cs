@@ -248,7 +248,7 @@ namespace FormsCombineArchive
       if (entry == null)
         return;
 
-      if (entry.Description != null) lblMessage.Text = entry.Description.Description.Trim();
+      if (entry.Description != null && entry.Description.Description != null) lblMessage.Text = entry.Description.Description.Trim();
 
       if (Entry.IsFormat("sbml",entry.Format) && controlSBWAnalyzer1.IsAvailable)
       {

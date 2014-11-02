@@ -27,19 +27,50 @@ namespace LibCombine
         /// Dictionary of known formats so that they will be recognized among tools
         /// </summary>
         public static Dictionary<string, List<string>> KnownFormatsList = new Dictionary<string, List<string>> { 
-            {"sbml", new List<string>{"http://identifiers.org/combine.specifications/sbml" } },
+            {"sbml", new List<string>{
+              "http://identifiers.org/combine.specifications/sbml", 
+              "http://identifiers.org/combine.specifications/sbml.level-1.version-1", 
+              "http://identifiers.org/combine.specifications/sbml.level-1.version-2", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version-1", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version-2", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version-3", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version-4", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version-5", 
+              "http://identifiers.org/combine.specifications/sbml.level-3.version-1", 
+              "http://identifiers.org/combine.specifications/sbml.level-3.version-2", 
+              "http://identifiers.org/combine.specifications/sbml.level-1.version.1", 
+              "http://identifiers.org/combine.specifications/sbml.level-1.version.2", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version.1", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version.2", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version.3", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version.4", 
+              "http://identifiers.org/combine.specifications/sbml.level-2.version.5", 
+              "http://identifiers.org/combine.specifications/sbml.level-3.version.1", 
+              "http://identifiers.org/combine.specifications/sbml.level-3.version.2", 
+            } },
             {"sedml", new List<string>
             {
-              "http://identifiers.org/combine.specifications/sed-ml", "http://identifiers.org/combine.specifications/sedml"
+              "http://identifiers.org/combine.specifications/sed-ml", 
+              "http://identifiers.org/combine.specifications/sedml", 
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-1",
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-2",
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-3"
             }},
             {"cellml", new List<string>{"http://identifiers.org/combine.specifications/cellml" }},
             {"sed-ml", new List<string>
             {
-              "http://identifiers.org/combine.specifications/sed-ml", "http://identifiers.org/combine.specifications/sedml"
+              "http://identifiers.org/combine.specifications/sed-ml", 
+              "http://identifiers.org/combine.specifications/sedml",
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-1",
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-2",
+              "http://identifiers.org/combine.specifications/sed-ml.level-1.version-3"
             }},
             {"sbgn", new List<string>{"http://identifiers.org/combine.specifications/sbgn" }},
-            {"omex", new List<string>{"http://identifiers.org/combine.specifications/omex-metadata" }},
-            {"manifest", new List<string>{"http://identifiers.org/combine.specifications/omex-manifest" }},
+            {"omex", new List<string>{"http://identifiers.org/combine.specifications/omex-metadata"}},
+            {"manifest", new List<string>{
+              "http://identifiers.org/combine.specifications/omex-manifest", 
+              "http://identifiers.org/combine.specifications/omex.version-1", 
+              "http://identifiers.org/combine.specifications/omex"}},
             {"sedx", new List<string>{"application/x-sed-ml-archive" }},
             {"png", new List<string>{"image/png" }},            
             {"csv", new List<string>{"text/csv" }},
@@ -301,9 +332,20 @@ namespace LibCombine
 
         public static bool IsFormat(string formatKey, string format)
         {
-          if (KnownFormats.ContainsKey(formatKey))
-            return KnownFormats[formatKey].Contains(format);
+          if (KnownFormatsList.ContainsKey(formatKey))
+          {
+            var knownFormats = KnownFormatsList[formatKey];
+            return knownFormats.Contains(format);
+          }
           
+
+          if (formatKey == "sbml" && format.StartsWith("http://identifiers.org/combine.specifications/sbml"))
+            return true;
+          if (formatKey == "sedml" && format.StartsWith("http://identifiers.org/combine.specifications/sed"))
+            return true;
+          if (formatKey == "sbgn" && format.StartsWith("http://identifiers.org/combine.specifications/sbgn"))
+            return true;
+
           return false;
 
         }

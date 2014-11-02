@@ -25,15 +25,25 @@ namespace FormsCombineArchive
     {
       textBox1.Copy();
     }
+
     public void InitializeFromFile(string filename)
     {
-      InitializeFrom(File.ReadAllText(filename), true);
-      FileName = filename;      
+      var info = new FileInfo(filename);
+      if (info.Length > 1*1024*1024)
+      {
+        InitializeFrom("File is too big to be displayed");
+      }
+      else
+      {
+        InitializeFrom(File.ReadAllText(filename), true);
+      }       
+      FileName = filename;
     }
 
     public void InitializeFrom(string content, bool saveVisible = false)
     {
       FileName = null;
+
       textBox1.Text = content.Replace("\n", Environment.NewLine).Replace("\r\r", "\r");
       menuStrip1.Visible = saveVisible;
     }

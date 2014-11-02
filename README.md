@@ -133,7 +133,7 @@ Frequently we are faced with project spanning more than just one file. Be it exp
 
     <?xml version="1.0" encoding="utf-8"?>
     <omexManifest xmlns="http://identifiers.org/combine.specifications/omex-manifest">
-      <content location="./manifest.xml" format="http://identifiers.org/combine.specifications/omex-manifest"/>
+      <content location="." format="http://identifiers.org/combine.specifications/omex-manifest"/>
       <content location="./model/model.xml" format="http://identifiers.org/combine.specifications/sbml"/>
       <content location="./simulation.xml" format="http://identifiers.org/combine.specifications/sedml"/>
       <content location="./article.pdf" format="application/pdf"/>
@@ -148,7 +148,7 @@ This project uses the following third party libraries:
 ## License 
 This project is open source and freely available under the [Simplified BSD](http://opensource.org/licenses/BSD-2-Clause) license. Should that license not meet your needs, please contact me. 
 
-Copyright (c) 2013, Frank T. Bergmann  
+Copyright (c) 2013-2014, Frank T. Bergmann  
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
