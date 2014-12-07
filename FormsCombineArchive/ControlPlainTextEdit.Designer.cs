@@ -33,6 +33,7 @@
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.formatXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.SuspendLayout();
@@ -77,7 +78,8 @@
       this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reloadToolStripMenuItem,
-            this.saveToolStripMenuItem});
+            this.saveToolStripMenuItem,
+            this.formatXMLToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(446, 24);
@@ -97,6 +99,13 @@
       this.saveToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
+      // 
+      // formatXMLToolStripMenuItem
+      // 
+      this.formatXMLToolStripMenuItem.Name = "formatXMLToolStripMenuItem";
+      this.formatXMLToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+      this.formatXMLToolStripMenuItem.Text = "Format &XML";
+      this.formatXMLToolStripMenuItem.Click += new System.EventHandler(this.OnFormatXmlClick);
       // 
       // ControlPlainTextEdit
       // 
@@ -124,5 +133,6 @@
     private System.Windows.Forms.MenuStrip menuStrip1;
     private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem formatXMLToolStripMenuItem;
   }
 }

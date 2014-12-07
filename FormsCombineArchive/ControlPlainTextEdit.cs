@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace FormsCombineArchive
 {
@@ -65,6 +66,40 @@ namespace FormsCombineArchive
         return;
       InitializeFromFile(FileName);
 
+    }
+
+    private void OnFormatXmlClick(object sender, EventArgs e)
+    {
+      if (string.IsNullOrWhiteSpace(FileName))
+        return;
+
+      InitializeFrom(ReformatXML(File.ReadAllText(FileName)), menuStrip1.Visible);
+
+    }
+
+    private string ReformatXML(string xml)
+    {
+      try
+      {
+        var doc = new XmlDocument();
+        doc.LoadXml(xml);
+
+        var oBuilder = new StringBuilder();
+        using (var writer = new StringWriter(oBuilder))
+        {
+          using (var oWriter = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+          {
+            doc.WriteContentTo(oWriter);
+            oWriter.Close();
+          }
+        }
+
+        return oBuilder.ToString();
+      }
+      catch
+      {
+        return xml;
+      }
     }
   }
 }

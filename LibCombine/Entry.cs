@@ -68,9 +68,10 @@ namespace LibCombine
             {"sbgn", new List<string>{"http://identifiers.org/combine.specifications/sbgn" }},
             {"omex", new List<string>{"http://identifiers.org/combine.specifications/omex-metadata"}},
             {"manifest", new List<string>{
+              "http://identifiers.org/combine.specifications/omex", 
               "http://identifiers.org/combine.specifications/omex-manifest", 
               "http://identifiers.org/combine.specifications/omex.version-1", 
-              "http://identifiers.org/combine.specifications/omex"}},
+              }},
             {"sedx", new List<string>{"application/x-sed-ml-archive" }},
             {"png", new List<string>{"image/png" }},            
             {"csv", new List<string>{"text/csv" }},
