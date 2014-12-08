@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibCombine;
 using SBW;
+using SBW.Utils;
 
 namespace FormsCombineArchive
 {
     public partial class ControlSBWAnalyzer : UserControl
     {
         private SortedList<string,ServiceDescriptor> _Analyzers;
-        SBW.Utils.SBWFavorites favs;
+        SBWFavorites favs;
         public bool IsAvailable { get; private set; }
         public Entry Current { get; set; }
 
@@ -39,10 +40,10 @@ namespace FormsCombineArchive
         {
             try
             {
-                var isConnected = SBW.SBWLowLevel.isConnected();
-                if (!isConnected) SBW.SBWLowLevel.connect();
+                var isConnected = SBWLowLevel.isConnected();
+                if (!isConnected) SBWLowLevel.connect();
                 var current = _Analyzers[(string)cmbAnalyzer.SelectedItem];
-                SBW.HighLevel.Send(current.ModuleName, current.Name, "void doAnalysis(string)", SBML);
+                HighLevel.Send(current.ModuleName, current.Name, "void doAnalysis(string)", SBML);
                 if (!isConnected) SBWLowLevel.disconnect();
             }
             catch 
@@ -75,7 +76,7 @@ namespace FormsCombineArchive
         {
             try
             {
-                _Analyzers = SBW.Utils.SBWMenu.GetSortedAnalyzers();
+                _Analyzers = SBWMenu.GetSortedAnalyzers();
             }
             catch
             {
@@ -94,7 +95,7 @@ namespace FormsCombineArchive
                 IsAvailable = true;
                 cmbAnalyzer.Items.AddRange(_Analyzers.Keys.ToArray<string>());
                 cmbAnalyzer.SelectedItem = cmbAnalyzer.Items[0];
-                favs = new SBW.Utils.SBWFavorites(() => SBML);
+                favs = new SBWFavorites(() => SBML);
             }
         }
     }

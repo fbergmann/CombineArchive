@@ -11,6 +11,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 public class PreviewHandlerHost : Control
 {
@@ -34,7 +35,7 @@ public class PreviewHandlerHost : Control
     /// Gets or sets the background colour of this PreviewHandlerHost.
     /// </summary>
     [DefaultValue("White")]
-    public override System.Drawing.Color BackColor
+    public override Color BackColor
     {
         get
         {
@@ -359,13 +360,13 @@ internal interface IInitializeWithStream
 internal class StreamWrapper : IStream
 {
 
-    private System.IO.Stream mInner;
+    private Stream mInner;
 
     /// <summary>
     /// Initialises a new instance of the StreamWrapper class, using the specified System.IO.Stream.
     /// </summary>
     /// <param name="inner"></param>
-    public StreamWrapper(System.IO.Stream inner)
+    public StreamWrapper(Stream inner)
     {
         mInner = inner;
     }
@@ -439,7 +440,7 @@ internal class StreamWrapper : IStream
     /// <param name="plibNewPosition"></param>
     public void Seek(long dlibMove, int dwOrigin, IntPtr plibNewPosition)
     {
-        long pos = mInner.Seek(dlibMove, (System.IO.SeekOrigin)dwOrigin);
+        long pos = mInner.Seek(dlibMove, (SeekOrigin)dwOrigin);
         if (plibNewPosition != IntPtr.Zero) Marshal.WriteInt64(plibNewPosition, pos);
     }
 
@@ -457,9 +458,9 @@ internal class StreamWrapper : IStream
     /// </summary>
     /// <param name="pstatstg"></param>
     /// <param name="grfStatFlag"></param>
-    public void Stat(out System.Runtime.InteropServices.ComTypes.STATSTG pstatstg, int grfStatFlag)
+    public void Stat(out STATSTG pstatstg, int grfStatFlag)
     {
-        pstatstg = new System.Runtime.InteropServices.ComTypes.STATSTG();
+        pstatstg = new STATSTG();
         pstatstg.cbSize = mInner.Length;
         pstatstg.type = 2; // stream type
         pstatstg.pwcsName = (mInner is FileStream) ? ((FileStream)mInner).Name : String.Empty;

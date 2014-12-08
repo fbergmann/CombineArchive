@@ -1,32 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace LibCombine
 {
-    /// <summary>
-    /// Entries in the COMBINE archive
-    /// </summary>
-    public class Entry
+  /// <summary>
+  /// Entries in the COMBINE archive
+  /// </summary>
+  public class Entry
+  {
+    public static Dictionary<string, string> KnownFormats
     {
-      public static Dictionary<string, string> KnownFormats
+      get
       {
-        get
+        Dictionary<string, string> result = new Dictionary<string, string>();
+        foreach (KeyValuePair<string, List<string>> keyValuePairString in KnownFormatsList)
         {
-          Dictionary<string, string> result = new Dictionary<string, string>();
-          foreach (KeyValuePair<string, List<string>> keyValuePairString in KnownFormatsList)
-          {
-            result[keyValuePairString.Key] = keyValuePairString.Value.FirstOrDefault();
-          }
-          return result;
+          result[keyValuePairString.Key] = keyValuePairString.Value.FirstOrDefault();
         }
+        return result;
       }
-        /// <summary>
-        /// Dictionary of known formats so that they will be recognized among tools
-        /// </summary>
-        public static Dictionary<string, List<string>> KnownFormatsList = new Dictionary<string, List<string>> { 
+    }
+    /// <summary>
+    /// Dictionary of known formats so that they will be recognized among tools
+    /// </summary>
+    public static Dictionary<string, List<string>> KnownFormatsList = new Dictionary<string, List<string>> { 
             {"sbml", new List<string>{
               "http://identifiers.org/combine.specifications/sbml", 
               "http://identifiers.org/combine.specifications/sbml.level-1.version-1", 
@@ -267,181 +268,186 @@ namespace LibCombine
             {"zip", new List<string>{"application/zip"}},
         };
 
-        internal CombineArchive Archive { get; set; }
+    internal CombineArchive Archive { get; set; }
 
-        /// <summary>
-        /// Gets or sets the location.
-        /// </summary>
-        /// <value>
-        /// The location.
-        /// </value>
-        public string Location { get; set; }
+    /// <summary>
+    /// Gets or sets the location.
+    /// </summary>
+    /// <value>
+    /// The location.
+    /// </value>
+    public string Location { get; set; }
 
-        /// <summary>
-        /// Gets or sets the format.
-        /// </summary>
-        /// <value>
-        /// The format.
-        /// </value>
-        public string Format { get; set; }
+    /// <summary>
+    /// Gets or sets the format.
+    /// </summary>
+    /// <value>
+    /// The format.
+    /// </value>
+    public string Format { get; set; }
 
-        /// <summary>
-        /// Resolves the local file name of this entry
-        /// </summary>
-        /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
-        /// <returns>a local filename for the entry or 'null'</returns>
-        public string GetLocalFileName(string baseDir = null)
-        {
-            if (Location.Contains("http://"))
-                return null;
+    /// <summary>
+    /// Optional attribute, indicating whether the current element is a master element. 
+    /// </summary>
+    public bool IsMaster { get; set; }
 
-            string location = Location.Replace("./", "");
-            if (File.Exists(location))
-                return location;
+    /// <summary>
+    /// Resolves the local file name of this entry
+    /// </summary>
+    /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
+    /// <returns>a local filename for the entry or 'null'</returns>
+    public string GetLocalFileName(string baseDir = null)
+    {
+      if (Location.Contains("http://"))
+        return null;
 
-            if (baseDir != null && File.Exists(Path.Combine(baseDir, location)))
-                return Path.Combine(baseDir, location);
+      string location = Location.Replace("./", "");
+      if (File.Exists(location))
+        return location;
 
-            if (Archive != null && Directory.Exists(Archive.BaseDir) && File.Exists(Path.Combine(Archive.BaseDir, location)))
-                return Path.Combine(Archive.BaseDir, location);
+      if (baseDir != null && File.Exists(Path.Combine(baseDir, location)))
+        return Path.Combine(baseDir, location);
 
-            return null;
+      if (Archive != null && Directory.Exists(Archive.BaseDir) && File.Exists(Path.Combine(Archive.BaseDir, location)))
+        return Path.Combine(Archive.BaseDir, location);
 
-        }
+      return null;
 
-        public static string GuessFormat(string fileName)
-        {
-          var ext = Path.GetExtension(fileName);
-          if (ext == ".xml")
-          {
-            using (var reader = File.OpenRead(fileName))
-            {
-              var buffer = new byte[512];
-              reader.Read(buffer, 0, 512);
-              var snippet =
-              Encoding.UTF8.GetString(buffer);
-
-              if (snippet.Contains("<sbml")) return LookupFormat("sbml");
-              if (snippet.Contains("<sedML")) return LookupFormat("sedml");
-              if (snippet.Contains("<cell")) return LookupFormat("cellml");
-            }
-          }
-          string extension = ext.Replace(".", "");
-          var format = LookupFormat(extension);
-          return format;
-        }
-
-        public static bool IsFormat(string formatKey, string format)
-        {
-          if (KnownFormatsList.ContainsKey(formatKey))
-          {
-            var knownFormats = KnownFormatsList[formatKey];
-            return knownFormats.Contains(format);
-          }
-          
-
-          if (formatKey == "sbml" && format.StartsWith("http://identifiers.org/combine.specifications/sbml"))
-            return true;
-          if (formatKey == "sedml" && format.StartsWith("http://identifiers.org/combine.specifications/sed"))
-            return true;
-          if (formatKey == "sbgn" && format.StartsWith("http://identifiers.org/combine.specifications/sbgn"))
-            return true;
-
-          return false;
-
-        }
-
-        public static string LookupFormat(string format)
-        {
-          if (KnownFormats.ContainsKey(format))
-            return KnownFormats[format];
-          return string.Empty;
-        }
-
-        /// <summary>
-        /// Opens the Entry with the program associated with it.
-        /// </summary>
-        /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
-        public void OpenLocation(string baseDir = null)
-        {
-            try
-            {
-                if (Location.Contains("http://"))
-                {
-                    System.Diagnostics.Process.Start(Location);
-                }
-
-                var localFileName = GetLocalFileName(baseDir);
-                if (localFileName != null)
-                    System.Diagnostics.Process.Start(localFileName);
-            }
-            catch
-            {
-                
-            }
-        }
-
-        public OmexDescription Description
-        {
-            get
-            {
-
-                if (Archive == null || Archive.Descriptions == null)
-                    return null;
-                return Archive.Descriptions.Where(e => e.About.Replace("./", "") == Location.Replace("./", "")).FirstOrDefault();
-
-            }
-        }
-
-
-        /// <summary>
-        /// Returns the contents of the entry as byte array
-        /// </summary>
-        /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
-        /// <returns>the contents of the entry as byte array</returns>
-        public byte[] GetBytes(string baseDir = null)
-        {
-            if (Location.Contains("http://"))
-                return Util.GetBytesForUrl(Location);
-
-            var fileName = GetLocalFileName(baseDir);
-
-            if (fileName == null)
-                return null;
-
-            return File.ReadAllBytes(fileName);
-
-
-        }
-
-        /// <summary>
-        /// Gets the contents of the entry as string.
-        /// </summary>
-        /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
-        /// <returns>the contents of the entry as string</returns>
-        public string GetContents(string baseDir = null)
-        {
-            if (Location.Contains("http://"))
-                return Util.GetStringForUrl(Location);
-
-            var fileName = GetLocalFileName(baseDir);
-
-            if (fileName == null)
-                return null;
-
-            return File.ReadAllText(fileName);
-
-        }
-
-        /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public override string ToString()
-        {
-            return string.Format("{0} : {1}", Location, Format);
-        }
     }
+
+    public static string GuessFormat(string fileName)
+    {
+      var ext = Path.GetExtension(fileName);
+      if (ext == ".xml")
+      {
+        using (var reader = File.OpenRead(fileName))
+        {
+          var buffer = new byte[512];
+          reader.Read(buffer, 0, 512);
+          var snippet =
+          Encoding.UTF8.GetString(buffer);
+
+          if (snippet.Contains("<sbml")) return LookupFormat("sbml");
+          if (snippet.Contains("<sedML")) return LookupFormat("sedml");
+          if (snippet.Contains("<cell")) return LookupFormat("cellml");
+        }
+      }
+      string extension = ext.Replace(".", "");
+      var format = LookupFormat(extension);
+      return format;
+    }
+
+    public static bool IsFormat(string formatKey, string format)
+    {
+      if (KnownFormatsList.ContainsKey(formatKey))
+      {
+        var knownFormats = KnownFormatsList[formatKey];
+        return knownFormats.Contains(format);
+      }
+
+
+      if (formatKey == "sbml" && format.StartsWith("http://identifiers.org/combine.specifications/sbml"))
+        return true;
+      if (formatKey == "sedml" && format.StartsWith("http://identifiers.org/combine.specifications/sed"))
+        return true;
+      if (formatKey == "sbgn" && format.StartsWith("http://identifiers.org/combine.specifications/sbgn"))
+        return true;
+
+      return false;
+
+    }
+
+    public static string LookupFormat(string format)
+    {
+      if (KnownFormats.ContainsKey(format))
+        return KnownFormats[format];
+      return string.Empty;
+    }
+
+    /// <summary>
+    /// Opens the Entry with the program associated with it.
+    /// </summary>
+    /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
+    public void OpenLocation(string baseDir = null)
+    {
+      try
+      {
+        if (Location.Contains("http://"))
+        {
+          Process.Start(Location);
+        }
+
+        var localFileName = GetLocalFileName(baseDir);
+        if (localFileName != null)
+          Process.Start(localFileName);
+      }
+      catch
+      {
+
+      }
+    }
+
+    public OmexDescription Description
+    {
+      get
+      {
+
+        if (Archive == null || Archive.Descriptions == null)
+          return null;
+        return Archive.Descriptions.Where(e => e.About.Replace("./", "") == Location.Replace("./", "")).FirstOrDefault();
+
+      }
+    }
+
+
+    /// <summary>
+    /// Returns the contents of the entry as byte array
+    /// </summary>
+    /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
+    /// <returns>the contents of the entry as byte array</returns>
+    public byte[] GetBytes(string baseDir = null)
+    {
+      if (Location.Contains("http://"))
+        return Util.GetBytesForUrl(Location);
+
+      var fileName = GetLocalFileName(baseDir);
+
+      if (fileName == null)
+        return null;
+
+      return File.ReadAllBytes(fileName);
+
+
+    }
+
+    /// <summary>
+    /// Gets the contents of the entry as string.
+    /// </summary>
+    /// <param name="baseDir">The base dir, used to override the archive base dir.</param>
+    /// <returns>the contents of the entry as string</returns>
+    public string GetContents(string baseDir = null)
+    {
+      if (Location.Contains("http://"))
+        return Util.GetStringForUrl(Location);
+
+      var fileName = GetLocalFileName(baseDir);
+
+      if (fileName == null)
+        return null;
+
+      return File.ReadAllText(fileName);
+
+    }
+
+    /// <summary>
+    /// Returns a <see cref="System.String" /> that represents this instance.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.String" /> that represents this instance.
+    /// </returns>
+    public override string ToString()
+    {
+      return string.Format("{0} : {1}", Location, Format);
+    }
+  }
 }

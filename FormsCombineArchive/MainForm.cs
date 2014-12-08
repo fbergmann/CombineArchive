@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FormsCombineArchive.Properties;
 using LibCombine;
 
 namespace FormsCombineArchive
@@ -44,6 +47,9 @@ namespace FormsCombineArchive
       SetupGroups();
 
       NewArchive();
+
+      lblMessage.Text = "Version: " + AboutBox.AssemblyVersion;
+
     }
 
     private ListViewGroup GetGroupForFormat(string format)
@@ -106,7 +112,7 @@ namespace FormsCombineArchive
       pictureBox1.Visible = true;
       textPanel.Visible = false;
       pictureBox1.Visible = true;
-      pictureBox1.Image = Properties.Resources.COMBINE_ARCHIVE;
+      pictureBox1.Image = Resources.COMBINE_ARCHIVE;
 
     }
 
@@ -127,7 +133,7 @@ namespace FormsCombineArchive
     {
       using (var dialog = new OpenFileDialog { Filter = "OMEX files|*.omex;*.sedx;*.sbex;*.cmex;*.phex;*.neux;*.sbox|All files|*.*" })
       {
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
           OpenFile(dialog.FileName);
         }
@@ -162,7 +168,7 @@ namespace FormsCombineArchive
     {
       using (var dialog = new SaveFileDialog { Filter = "OMEX files|*.omex;*.sedx;*.sbex;*.cmex;*.phex;*.neux;*.sbox|All files|*.*" })
       {
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
           SaveFile(dialog.FileName);
         }
@@ -238,7 +244,7 @@ namespace FormsCombineArchive
         pictureBox1.Visible = true;
         textPanel.Visible = false;
         pictureBox1.Visible = true;
-        pictureBox1.Image = Properties.Resources.COMBINE_ARCHIVE;
+        pictureBox1.Image = Resources.COMBINE_ARCHIVE;
         return;
       }
       var item = lstEntries.SelectedItems[0];
@@ -296,7 +302,7 @@ namespace FormsCombineArchive
     public void AddFile(string filename = "")
         {
             var dialog = new FormAddFile { FileName = filename };
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var entry = Archive.AddEntry(
                     dialog.FileName, 
@@ -362,7 +368,7 @@ namespace FormsCombineArchive
       var entry = GetCurrenEntry(out item);
       if (entry == null) return;
 
-      if (MessageBox.Show(string.Format("Do you really want to delete '{0}'?", item.Text), "Delete Entry", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+      if (MessageBox.Show(string.Format("Do you really want to delete '{0}'?", item.Text), "Delete Entry", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
       {
         lstEntries.Items.Remove(item);
         Archive.Entries.Remove(entry);
@@ -388,7 +394,7 @@ namespace FormsCombineArchive
       {
         using (var dialog = new SaveFileDialog { Filter = "*" + ext })
         {
-          if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK
+          if (dialog.ShowDialog() == DialogResult.OK
               )
             File.Copy(local, dialog.FileName);
         }
@@ -399,7 +405,7 @@ namespace FormsCombineArchive
       }
     }
 
-    private void DisplayMetaData(object sender, EventArgs e)
+    private void OnDisplayMetaDataClick(object sender, EventArgs e)
     {
       ListViewItem item; ;
       var entry = GetCurrenEntry(out item);
@@ -407,7 +413,7 @@ namespace FormsCombineArchive
 
       OmexDescription desc = entry.Description;
       var dialog = new FormDisplayData { FileName = entry.Location, Format = entry.Format, Description = desc };
-      if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+      if (dialog.ShowDialog() == DialogResult.OK)
       {
         entry.Location = dialog.FileName;
         entry.Format = dialog.Format;
@@ -426,7 +432,7 @@ namespace FormsCombineArchive
       if (local == null) return;
       try
       {
-        System.Collections.Specialized.StringCollection col = new System.Collections.Specialized.StringCollection();
+        StringCollection col = new StringCollection();
         col.Add(local);
         Clipboard.SetFileDropList(col);
       }
@@ -462,13 +468,52 @@ namespace FormsCombineArchive
 
       try
       {
-        System.Diagnostics.Process.Start("http://github.com/fbergmann/CombineArchive/issues");
+        Process.Start("http://github.com/fbergmann/CombineArchive/issues");
       }
       catch
       {
 
       }
 
+    }
+
+    private void OnValidateClick(object sender, EventArgs e)
+    {
+      var errors = Archive.Validate();
+      if (errors.Count == 0)
+      {
+        MessageBox.Show("No issues found.", "Archive is valid", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        return;
+      }
+
+      var sb = new StringBuilder();
+      foreach (var item in errors)
+        sb.AppendFormat("{0}: {1}{2}", item.Item1, item.Item2, Environment.NewLine);
+
+      if (errors.FirstOrDefault( t => t.Item1 == "error") != null)
+      {
+        MessageBox.Show(this, string.Format("Errors found: {0}{0}{1}", Environment.NewLine, sb.ToString()), "Archive is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+
+      MessageBox.Show(this, string.Format("Issues found: {0}{0}{1}", Environment.NewLine, sb.ToString()), "Archive has issues", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+    }
+
+    private void OnEditArchivePropertiesClick(object sender, EventArgs e)
+    {
+      OmexDescription desc = Archive.Descriptions.FirstOrDefault(d => d.About == ".");
+      if (desc == null)
+      {
+        desc = new OmexDescription {About = ".", Created = DateTime.Now};
+        Archive.Descriptions.Add(desc);
+      }
+      var dialog = new FormDisplayData { FileName = ".", Format = Entry.KnownFormats["omex"], Description = desc };
+      if (dialog.ShowDialog() == DialogResult.OK)
+      {
+        Archive.Descriptions.Remove(desc);
+        Archive.Descriptions.Add(dialog.Description);
+      }
     }
   }
 }
