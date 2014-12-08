@@ -301,7 +301,7 @@ namespace FormsCombineArchive
 
     public void AddFile(string filename = "")
         {
-            var dialog = new FormAddFile { FileName = filename };
+            var dialog = new FormAddFile { FileName = filename, Format = Entry.GuessFormat(filename) };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var entry = Archive.AddEntry(
@@ -339,7 +339,8 @@ namespace FormsCombineArchive
       }
       else
       {
-        AddFile(sFilenames[0]);
+        foreach(var item in sFilenames )
+        AddFile(item);
       }
     }
 
