@@ -371,10 +371,11 @@ namespace LibCombine
                     .Replace(BaseDir, "./")
                     .Replace("././", "./")
                     .Replace("./\\", "./")
+                    .Replace(".//", "./")
                     .Replace("./manifest.xml", ".")
                     ),
                 new XAttribute("format", entry.Format),
-                new XAttribute("master", entry == MainEntry ? "true" : "false")));
+                new XAttribute("master", entry == MainEntry || entry.IsMaster ? "true" : "false")));
       }
       var srcTree = new XDocument(root);
       return
