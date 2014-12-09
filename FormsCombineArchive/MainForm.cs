@@ -226,6 +226,8 @@ namespace FormsCombineArchive
       textPanel.Visible = false;
       pictureBox1.ImageLocation = filename;
     }
+
+    
     private void DisplayUrl(string location)
     {
       previewHandlerHost1.Visible = false;
@@ -284,6 +286,10 @@ namespace FormsCombineArchive
         webBrowser1.Visible = false;
         pictureBox1.Visible = false;
         previewHandlerHost1.Visible = true;
+      }
+      else if (entry.Format == "text/html" || entry.Format == "text/xhtml" || entry.Format == "image/svg+xml")
+      {
+        DisplayUrl(filename);
       }
       else if (entry.Format.Contains("image/"))
       {

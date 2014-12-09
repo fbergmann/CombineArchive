@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "COMBINE archive"
-!define PRODUCT_VERSION "1.9"
+!define PRODUCT_VERSION "1.10"
 !define PRODUCT_PUBLISHER "Frank T. Bergmann"
 !define PRODUCT_WEB_SITE "http://fbergmann.github.io/CombineArchive/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\FormsCombineArchive.exe"
