@@ -109,6 +109,17 @@ namespace LibCombine
 
     }
 
+    public Entry this[int index]
+    {
+      get { return Entries[index]; }
+    }
+
+    public Entry this[string location]
+    {
+      get { return Entries.Where(e => e.Location == location).FirstOrDefault(); }
+    }
+
+
     public List<Entry> GetEntriesWithFormat(string format)
     {
       UpdateRefs();
@@ -211,6 +222,14 @@ namespace LibCombine
               entry.IsMaster = true;
               MainEntry = entry;              
             }
+
+            var xrefs = element.GetElementsByTagName("crossRef", currentNs);
+            foreach (var node in xrefs)
+            {
+              var xref = ((XmlElement)node).GetAttribute("location");
+              entry.CrossReferences.Add(xref);
+            }
+
             Entries.Add(entry);
 
           }
@@ -364,8 +383,7 @@ namespace LibCombine
       var root = new XElement(ns + "omexManifest");
       foreach (var entry in Entries)
       {
-        root.Add(
-            new XElement(ns + "content",
+        var el = new XElement(ns + "content",
                 new XAttribute("location",
                     entry.Location
                     .Replace(BaseDir, "./")
@@ -375,7 +393,18 @@ namespace LibCombine
                     .Replace("./manifest.xml", ".")
                     ),
                 new XAttribute("format", entry.Format),
-                new XAttribute("master", entry == MainEntry || entry.IsMaster ? "true" : "false")));
+                new XAttribute("master", entry == MainEntry || entry.IsMaster ? "true" : "false"));
+        foreach (var xref in entry.CrossReferences)
+        {
+          el.Add(new XElement(ns + "crossRef"),
+            new XAttribute("location", xref
+                    .Replace(BaseDir, "./")
+                    .Replace("././", "./")
+                    .Replace("./\\", "./")
+                    .Replace(".//", "./")
+            ));
+        }
+        root.Add(el);
       }
       var srcTree = new XDocument(root);
       return

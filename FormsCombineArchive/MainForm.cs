@@ -91,6 +91,21 @@ namespace FormsCombineArchive
         ToolTipText = GetToolTip(entry)
       };
 
+      foreach (var xref in entry.CrossReferences)
+      {
+        var xentry = Archive[xref];
+        if (xentry == null)
+          continue;
+
+        var xitem = new ListViewItem.ListViewSubItem
+        {
+          Text = GetNameForLocation(xref),
+          Tag = xentry,
+           
+        };
+        item.SubItems.Add(xitem);
+      }
+
       lstEntries.Items.Add(item);
     }
     private void UpdateUI()
@@ -125,7 +140,7 @@ namespace FormsCombineArchive
       }
       catch (Exception ex)
       {
-        MessageBox.Show("An error occured while opening the file. The exception was: " + Environment.NewLine + Environment.NewLine + ex.Message, "Could not open archive", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("An error occurred while opening the file. The exception was: " + Environment.NewLine + Environment.NewLine + ex.Message, "Could not open archive", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -160,7 +175,7 @@ namespace FormsCombineArchive
       }
       catch (Exception ex)
       {
-        MessageBox.Show("An error occured while saving the file. Please ensure that all files in this archive are closed, so they can be read. The exception was: " + Environment.NewLine + Environment.NewLine + ex.Message, "Could not save archive", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("An error occurred while saving the file. Please ensure that all files in this archive are closed, so they can be read. The exception was: " + Environment.NewLine + Environment.NewLine + ex.Message, "Could not save archive", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 

@@ -293,6 +293,17 @@ namespace LibCombine
     /// </summary>
     public bool IsMaster { get; set; }
 
+
+    /// <summary>
+    /// A list of cross references to other entries this entry is related too. It is optional
+    /// </summary>
+    public List<string> CrossReferences { get; set;  }
+
+    public Entry()
+    {
+      CrossReferences = new List<string> ();
+    }
+
     /// <summary>
     /// Resolves the local file name of this entry
     /// </summary>
@@ -332,6 +343,7 @@ namespace LibCombine
           if (snippet.Contains("<sbml")) return LookupFormat("sbml");
           if (snippet.Contains("<sedML")) return LookupFormat("sedml");
           if (snippet.Contains("<cell")) return LookupFormat("cellml");
+          if (snippet.Contains("<COPASI ")) return LookupFormat("copasi");
         }
       }
       string extension = ext.Replace(".", "");

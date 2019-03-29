@@ -80,29 +80,34 @@ namespace CombineCLI
                     Console.WriteLine("  org  : " + creator.Organization);
                     Console.WriteLine();
                 }
+                Console.WriteLine();
 
-                
-            }
-
-            //var archive = 
-            //    CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\isola_oscillations_sed.sed.omex");
-
-            //Console.WriteLine("Num SEDML files: {0}", archive.GetNumFilesWithFormat("SEDML"));
-            //Console.WriteLine("Num SBML files: {0}", archive.GetNumFilesWithFormat("sbml"));
-            //Console.WriteLine("Num SBML files: {0}", archive.GetNumFilesWithFormat("sbml"));
-
-            //archive.SaveTo(@"C:\Users\fbergmann\Desktop\isola.omex");
+                foreach (var xref in entry.CrossReferences)
+                    Console.WriteLine("  xref  : " + xref);
 
 
 
-            //var omex = CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\Boris.omex");
+      }
 
-            //if (omex.HasEntriesWithFormat("pdf"))
-            //    omex.GetEntriesWithFormat("PDF").First().OpenLocation();
+      //var archive = 
+      //    CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\isola_oscillations_sed.sed.omex");
+
+      //Console.WriteLine("Num SEDML files: {0}", archive.GetNumFilesWithFormat("SEDML"));
+      //Console.WriteLine("Num SBML files: {0}", archive.GetNumFilesWithFormat("sbml"));
+      //Console.WriteLine("Num SBML files: {0}", archive.GetNumFilesWithFormat("sbml"));
+
+      //archive.SaveTo(@"C:\Users\fbergmann\Desktop\isola.omex");
 
 
-            //Console.ReadKey();
-        }
+
+      //var omex = CombineArchive.FromFile(@"C:\Users\fbergmann\Desktop\Boris.omex");
+
+      //if (omex.HasEntriesWithFormat("pdf"))
+      //    omex.GetEntriesWithFormat("PDF").First().OpenLocation();
+
+
+      //Console.ReadKey();
+    }
     }
 }
 
