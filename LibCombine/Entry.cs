@@ -98,6 +98,8 @@ namespace LibCombine
             {"cer", new List<string>{"application/x-x509-ca-cert"}},
             {"class", new List<string>{"application/octet-stream"}},
             {"clp", new List<string>{"application/x-msclip"}},
+            {"cps", new List<string>{"application/x-copasi"}},
+            {"copasi", new List<string>{"application/x-copasi"}},
             {"cmx", new List<string>{"image/x-cmx"}},
             {"cod", new List<string>{"image/cis-cod"}},
             {"cpio", new List<string>{"application/x-cpio"}},
